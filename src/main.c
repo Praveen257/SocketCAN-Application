@@ -3,7 +3,7 @@
 /*									*/
 /* The program use the CAN-ID 601 an process the load of 5 Bytes	*/
 /*									*/
-/*									*/ 
+/*									*/
 /* The CAN Driver can0 have to be initialised.				*/
 
 #include "../inc/radar.h"
@@ -12,7 +12,7 @@ int main(){
 
 	int socket_id, error;
 	struct Cluster Cluster_Status;
-
+  struct Cluster_GenInf Cluster_gen;
 	error = open_socket(&socket_id);
 
 	if (error == -1)
@@ -23,11 +23,13 @@ int main(){
 	if (error == 0){
 
 		do {
-			Read_Cluster(socket_id, &Cluster_Status);
+		Read_Cluster(socket_id, &Cluster_Status);
+		Read_ClusterGen(socket_id, &Cluster_gen);
 		printf("Number of near Target = %d, Number of far Targets %d\n", Cluster_Status.near_target, Cluster_Status.far_target);
- 
 		printf("Number Measurement Cycles = %d\n", Cluster_Status.cycle_counter);
-		 
+		/* Cluster Genral Information*/
+		printf("Cluster Id =  %d, dist_Longitude = %d , dist_latitude = %d \n",Cluster_gen.clust_id,Cluster_gen.clust_distlong,Cluster_gen.clust_distlat);
+		printf("Cluster relative long=  %d , Cluster relative lattitude = %d, Cluster dynamic = %d , CLuster RCS = %d \n",Cluster_gen.clust_vrelLong,Cluster_gen.clust_vrelLat,Cluster_gen.clust_dycprop,Cluster_gen.clust_RCS);
 
 
 		} while(1);
@@ -36,5 +38,3 @@ int main(){
 	close(socket_id);
 	return(0);
 }
-
-
